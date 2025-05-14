@@ -143,7 +143,6 @@ def model_test(inputs, batch_size, n_his, n_pred, inf_mode, load_path='./output/
         y_true = x_test[0:full_actuals.shape[1], n_his:n_his + n_pred, :, :]
         y_pred_transposed = full_preds.transpose(1, 0, 2, 3)
 
-        # 变形为 (batch * n_pred, n_route, 1)
         y_true_reshaped = y_true.reshape(-1, y_true.shape[2], 1)
         y_pred_reshaped = y_pred_transposed.reshape(-1, y_pred_transposed.shape[2], 1)
 
