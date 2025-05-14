@@ -142,11 +142,21 @@ def model_test(inputs, batch_size, n_his, n_pred, inf_mode, load_path='./output/
 
         y_true = x_test[0:full_actuals.shape[1], n_his:n_his + n_pred, :, :]
         y_pred_transposed = full_preds.transpose(1, 0, 2, 3)
-        evl = evaluation(y_true.reshape(-1, y_true.shape[2], y_pred_transposed.reshape(-1, y_pred_transposed.shape[2]), x_stats))
+
+        # 变形为 (batch * n_pred, n_route, 1)
+        y_true_reshaped = y_true.reshape(-1, y_true.shape[2], 1)
+        y_pred_reshaped = y_pred_transposed.reshape(-1, y_pred_transposed.shape[2], 1)
+
+        evl = evaluation(y_true_reshaped, y_pred_reshaped, x_stats)
+
+        if evl.size == 0:
+            raise ValueError("评估结果为空，请检查输入数据的形状。")
 
         for ix in tmp_idx:
-            te = evl[ix - 2:ix + 1]
-            print(f'Step {ix + 1}: MAPE {te[0]:7.3%}; MAE {te[1]:4.3f}; RMSE {te[2]:6.3f}')
-        print(f'总测试时间: {time.time() - start_time:.2f}s')
+            if ix >= len(evl):
+                continue
+            te = evl[ix - 2:ix + 1] if (ix - 2 >= 0 and ix + 1 <= len(evl)) else evl
+            print(f'时间步 {ix + 1}: MAPE {te[0]:7.3%}; MAE {te[1]:4.3f}; RMSE {te[2]:6.3f}')
+        print(f'总测试时间: {time.time() - start_time:.2f}秒')
 
     print('测试完成!')

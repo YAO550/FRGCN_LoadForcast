@@ -63,7 +63,7 @@ Lk = cheb_poly_approx(L, Ks, n)
 tf.add_to_collection(name='graph_kernel', value=tf.cast(tf.constant(Lk), tf.float32))
 
 # Data Preprocessing
-data_file = 'NYC_data_11_nodes_0.csv'
+data_file = 'NYC_data_11_nodes_10080.csv'
 #data_file = 'PMU_P.csv'
 n_train, n_val, n_test =25,5,5
 # n_train, n_val, n_test =5,1,1
